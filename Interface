@@ -1,33 +1,31 @@
 
-import java.awt.EventQueue;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.swing.JFrame;
-import javax.swing.JLayeredPane;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.border.EmptyBorder;
-
 public class Clonium extends JFrame {
 
 	private static final long serialVersionUID = 173486282482136772L;
 
-	// Attribut de la class Clonium.
 	private JPanel humanMachineInterface;
 
 	private JLayeredPane layeredPane;
 
-	public ArrayList<Case> listeComposant = new ArrayList<Case>();
+	private ArrayList<Case> listeComposantPlateau = new ArrayList<Case>();
+
+	private ArrayList<Joueur> listeJoueur = new ArrayList<Joueur>();
+
+	private short nombreJoueur;
+
+	private short numeroJoueur;
 
 	public static void main(String[] args) {
+
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					Clonium frame = new Clonium();
-					frame.setVisible(true);
+					Clonium plateau = new Clonium();
+					ChooseNumberPlayer choixJoueur = new ChooseNumberPlayer();
+					choixJoueur.setVisible(true);
+					plateau.setVisible(true);
+					choixJoueur.setAlwaysOnTop(true);
+
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -40,9 +38,11 @@ public class Clonium extends JFrame {
 	 */
 	public Clonium() {
 		// All default operations
+
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);// quitting button.
 		setBounds(100, 100, 680, 475); // 880,675
 		humanMachineInterface = new JPanel();
+		this.numeroJoueur = 0;
 
 		// Create border
 		humanMachineInterface.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -51,20 +51,19 @@ public class Clonium extends JFrame {
 		setContentPane(humanMachineInterface);
 		humanMachineInterface.setLayout(null);
 		humanMachineInterface.add(getLayeredPane_1());
+		setLocationRelativeTo(null);
+
+		// Create second list of components
 
 		for (int id = 0; id < 64; id++) {
 			// Creating new Object
 			Case laCase = creerCase(id);
-			listeComposant.add(laCase);
+			listeComposantPlateau.add(laCase);
 			// Add every Case to the JFrame
 			humanMachineInterface.add(laCase);
 		}
 
 		/**
-		 * La demande du nombre de joueur, la création d'un class Partie et
-		 * d'une class Joueur.
-		 * 
-		 * 
 		 * Enfin nous verrons pour implementer differentes choses comme choisir
 		 * la taille du terrain ajouter un Jmenu pour sauvegarder une partie
 		 * finie dans un fichier pour pouvoir la rejouer coup par coup et pour
@@ -110,21 +109,15 @@ public class Clonium extends JFrame {
 						int explosingCase = currentCase.getId();
 
 						List<Case> casesAdjacentes = getCasesAdjacentes(explosingCase);
+
 						for (Case c : casesAdjacentes) {
 							c.increaseValue();
 							System.out.println(c.getId() + "->" + c.getValue());
+
 						}
-
 					}
-
 				}
-
 			}
-
-
-
-
-
 		});
 	}
 
@@ -139,26 +132,25 @@ public class Clonium extends JFrame {
 	private List<Case> getCasesAdjacentes(int explosingCase) {
 
 		List<Case> cases = new ArrayList<>();
-		System.out.println(listeComposant.contains(explosingCase - 1));
+		System.out.println(listeComposantPlateau.contains(explosingCase - 1));
 		if (isValidPosition(explosingCase - 1)) {
-			cases.add(listeComposant.get(explosingCase - 1));
+			cases.add(listeComposantPlateau.get(explosingCase - 1));
 		}
 		if (isValidPosition(explosingCase + 1)) {
-			cases.add(listeComposant.get(explosingCase + 1));
+			cases.add(listeComposantPlateau.get(explosingCase + 1));
 		}
 		if (isValidPosition(explosingCase - 8)) {
-			cases.add(listeComposant.get(explosingCase - 8));
+			cases.add(listeComposantPlateau.get(explosingCase - 8));
 		}
 		if (isValidPosition(explosingCase + 8)) {
-			cases.add(listeComposant.get(explosingCase + 8));
+			cases.add(listeComposantPlateau.get(explosingCase + 8));
 		}
 
 		return cases;
 	}
 
 	private boolean isValidPosition(int position) {
-		return position >= 0 && position < listeComposant.size();
+		return position >= 0 && position < listeComposantPlateau.size();
 	}
 
 }
-
