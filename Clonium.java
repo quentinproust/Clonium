@@ -1,5 +1,6 @@
 package new_idea;
 
+
 import java.awt.EventQueue;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
