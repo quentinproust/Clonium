@@ -1,13 +1,11 @@
 package new_idea;
 
-
 import java.awt.EventQueue;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLayeredPane;
 import javax.swing.JOptionPane;
@@ -105,19 +103,23 @@ public class Clonium extends JFrame {
 
 					// Récupération de la valeur du jeton.
 					Case currentCase = (Case) leftClick.getSource();
-					int newValue = currentCase.getValue();
+					int currentValue = currentCase.getValue();
 
 					// Test s'il y a un jeton.
-					if (newValue == '0') {
+					System.out.println("Hue");
+					if (currentValue == '0') {
 
-						JOptionPane.showMessageDialog(null, "Vous ne pouvez pas jouer ici car il n'y a pas de jeton",
+						System.out.println("Hihi");
+						JOptionPane.showMessageDialog(humanMachineInterface,
+								"Vous ne pouvez pas jouer ici car il n'y a pas de jeton",
 								"Error", JOptionPane.WARNING_MESSAGE);
 
-					} else if (newValue >= '1' && newValue < '3') {
+						System.out.println("hihi2");
+					} else if (currentValue >= '1' && currentValue < '3') {
 
 						currentCase.increaseValue();
 
-					} else if (newValue >= '3') {
+					} else if (currentValue >= '3') {
 
 						currentCase.resetValue();
 						int explosingCase = currentCase.getId();
@@ -205,14 +207,6 @@ public class Clonium extends JFrame {
 		}
 	}
 
-	private void placerLesJoueur() {
-		ArrayList<Case> premierJeton = new ArrayList<Case>();
-		premierJeton.add(listeComposantPlateau.get(10));
-
-		for (JButton Case : premierJeton) {
-
-		}
-	}
 
 }
 
