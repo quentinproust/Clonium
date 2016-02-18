@@ -1,3 +1,17 @@
+package new_idea;
+
+import java.awt.EventQueue;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLayeredPane;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.border.EmptyBorder;
 
 public class Clonium extends JFrame {
 
@@ -11,20 +25,15 @@ public class Clonium extends JFrame {
 
 	private ArrayList<Joueur> listeJoueur = new ArrayList<Joueur>();
 
-	private short nombreJoueur;
-
-	private short numeroJoueur;
-
 	public static void main(String[] args) {
 
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					Clonium plateau = new Clonium();
+
 					ChooseNumberPlayer choixJoueur = new ChooseNumberPlayer();
 					choixJoueur.setVisible(true);
-					plateau.setVisible(true);
-					choixJoueur.setAlwaysOnTop(true);
+
 
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -36,13 +45,18 @@ public class Clonium extends JFrame {
 	/**
 	 * Create the frame.
 	 */
+
 	public Clonium() {
+
+	}
+
+	public Clonium(int nbJoueur) {
 		// All default operations
 
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);// quitting button.
 		setBounds(100, 100, 680, 475); // 880,675
 		humanMachineInterface = new JPanel();
-		this.numeroJoueur = 0;
+
 
 		// Create border
 		humanMachineInterface.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -52,26 +66,25 @@ public class Clonium extends JFrame {
 		humanMachineInterface.setLayout(null);
 		humanMachineInterface.add(getLayeredPane_1());
 		setLocationRelativeTo(null);
-
+		setAlwaysOnTop(true);
 		// Create second list of components
 
+		// create Players List
+		creerJoueur(listeJoueur, nbJoueur);
+		entrezPseudo(listeJoueur);
+		quiEstUnOrdi(listeJoueur);
+
+		// Create List of components
 		for (int id = 0; id < 64; id++) {
-			// Creating new Object
+
 			Case laCase = creerCase(id);
 			listeComposantPlateau.add(laCase);
+
 			// Add every Case to the JFrame
 			humanMachineInterface.add(laCase);
 		}
 
-		/**
-		 * Enfin nous verrons pour implementer differentes choses comme choisir
-		 * la taille du terrain ajouter un Jmenu pour sauvegarder une partie
-		 * finie dans un fichier pour pouvoir la rejouer coup par coup et pour
-		 * finir un service pour passer d'une JFrame a une autre pour que tout
-		 * ressemble à un jeu fini et complet enfin si on a le temps on
-		 * étudieras la question de l'appli Android.
-		 * 
-		 */
+
 	}
 
 	private Case creerCase(int id) {
@@ -153,4 +166,60 @@ public class Clonium extends JFrame {
 		return position >= 0 && position < listeComposantPlateau.size();
 	}
 
+	private void creerJoueur(ArrayList<Joueur> listeJoueur, int nbJoueur) {
+		for (int numeroJoueur = 0; numeroJoueur < nbJoueur; numeroJoueur++) {
+			Joueur player = new Joueur(numeroJoueur + 1);
+			listeJoueur.add(player);
+		}
+	}
+
+	private void entrezPseudo(ArrayList<Joueur> listeJoueur) {
+
+		for (Joueur joueur : listeJoueur) {
+			
+			String playerName = null;
+			playerName = JOptionPane
+.showInputDialog("Entrez le pseudo du joueur " + joueur.getNumeroJoueur() + ". ");
+			if (playerName == null) {
+				playerName = "Anonymous " + joueur.getNumeroJoueur();
+			}
+			joueur.setPseudo(playerName);
+
+		}
+
+	}
+
+	private void quiEstUnOrdi(ArrayList<Joueur> listeJoueur) {
+
+		for (Joueur joueur : listeJoueur) {
+
+			int yes = JOptionPane.showConfirmDialog(null, "Shall this player be controlled by computer", "Warning",
+				DO_NOTHING_ON_CLOSE);
+			if (yes == 0) {
+				joueur.setEstHumain(true);
+			} else {
+				joueur.setEstHumain(false);
+			}
+
+		}
+	}
+
+	private void placerLesJoueur() {
+		ArrayList<Case> premierJeton = new ArrayList<Case>();
+		premierJeton.add(listeComposantPlateau.get(10));
+
+		for (JButton Case : premierJeton) {
+
+		}
+	}
+
 }
+
+/**
+ * Enfin nous verrons pour implementer differentes choses comme choisir la
+ * taille du terrain ajouter un Jmenu pour sauvegarder une partie finie dans un
+ * fichier pour pouvoir la rejouer coup par coup et pour finir un service pour
+ * passer d'une JFrame a une autre pour que tout ressemble à un jeu fini et
+ * complet enfin si on a le temps on étudieras la question de l'appli Android.
+ * 
+ */
