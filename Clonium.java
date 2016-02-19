@@ -1,3 +1,4 @@
+package new_idea;
 
 import java.awt.EventQueue;
 import java.awt.event.MouseAdapter;
@@ -15,19 +16,24 @@ public class Clonium extends JFrame {
 
 	private static final long serialVersionUID = 173486282482136772L;
 
-	// Attribut de la class Clonium.
 	private JPanel humanMachineInterface;
 
 	private JLayeredPane layeredPane;
 
-	public ArrayList<Case> listeComposant = new ArrayList<Case>();
+	private ArrayList<Case> listeComposantPlateau = new ArrayList<Case>();
+
+	private ArrayList<Joueur> listeJoueur = new ArrayList<Joueur>();
 
 	public static void main(String[] args) {
+
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					Clonium frame = new Clonium();
-					frame.setVisible(true);
+
+					ChooseNumberPlayer choixJoueur = new ChooseNumberPlayer();
+					choixJoueur.setVisible(true);
+
+
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -38,11 +44,18 @@ public class Clonium extends JFrame {
 	/**
 	 * Create the frame.
 	 */
+
 	public Clonium() {
+
+	}
+
+	public Clonium(int nbJoueur) {
 		// All default operations
+
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);// quitting button.
 		setBounds(100, 100, 680, 475); // 880,675
 		humanMachineInterface = new JPanel();
+
 
 		// Create border
 		humanMachineInterface.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -51,28 +64,26 @@ public class Clonium extends JFrame {
 		setContentPane(humanMachineInterface);
 		humanMachineInterface.setLayout(null);
 		humanMachineInterface.add(getLayeredPane_1());
+		setLocationRelativeTo(null);
+		setAlwaysOnTop(true);
+		// Create second list of components
 
+		// create Players List
+		creerJoueur(listeJoueur, nbJoueur);
+		entrezPseudo(listeJoueur);
+		quiEstUnOrdi(listeJoueur);
+
+		// Create List of components
 		for (int id = 0; id < 64; id++) {
-			// Creating new Object
+
 			Case laCase = creerCase(id);
-			listeComposant.add(laCase);
+			listeComposantPlateau.add(laCase);
+
 			// Add every Case to the JFrame
 			humanMachineInterface.add(laCase);
 		}
 
-		/**
-		 * La demande du nombre de joueur, la création d'un class Partie et
-		 * d'une class Joueur.
-		 * 
-		 * 
-		 * Enfin nous verrons pour implementer differentes choses comme choisir
-		 * la taille du terrain ajouter un Jmenu pour sauvegarder une partie
-		 * finie dans un fichier pour pouvoir la rejouer coup par coup et pour
-		 * finir un service pour passer d'une JFrame a une autre pour que tout
-		 * ressemble à un jeu fini et complet enfin si on a le temps on
-		 * étudieras la question de l'appli Android.
-		 * 
-		 */
+
 	}
 
 	private Case creerCase(int id) {
@@ -92,39 +103,37 @@ public class Clonium extends JFrame {
 
 					// Récupération de la valeur du jeton.
 					Case currentCase = (Case) leftClick.getSource();
-					int newValue = currentCase.getValue();
+					int currentValue = currentCase.getValue();
 
 					// Test s'il y a un jeton.
-					if (newValue == '0') {
+					System.out.println("Hue");
+					if (currentValue == '0') {
 
-						JOptionPane.showMessageDialog(null, "Vous ne pouvez pas jouer ici car il n'y a pas de jeton",
+						System.out.println("Hihi");
+						JOptionPane.showMessageDialog(humanMachineInterface,
+								"Vous ne pouvez pas jouer ici car il n'y a pas de jeton",
 								"Error", JOptionPane.WARNING_MESSAGE);
 
-					} else if (newValue >= '1' && newValue < '3') {
+						System.out.println("hihi2");
+					} else if (currentValue >= '1' && currentValue < '3') {
 
 						currentCase.increaseValue();
 
-					} else if (newValue >= '3') {
+					} else if (currentValue >= '3') {
 
 						currentCase.resetValue();
 						int explosingCase = currentCase.getId();
 
 						List<Case> casesAdjacentes = getCasesAdjacentes(explosingCase);
+
 						for (Case c : casesAdjacentes) {
 							c.increaseValue();
 							System.out.println(c.getId() + "->" + c.getValue());
+
 						}
-
 					}
-
 				}
-
 			}
-
-
-
-
-
 		});
 	}
 
@@ -139,26 +148,73 @@ public class Clonium extends JFrame {
 	private List<Case> getCasesAdjacentes(int explosingCase) {
 
 		List<Case> cases = new ArrayList<>();
-		System.out.println(listeComposant.contains(explosingCase - 1));
+		System.out.println(listeComposantPlateau.contains(explosingCase - 1));
 		if (isValidPosition(explosingCase - 1)) {
-			cases.add(listeComposant.get(explosingCase - 1));
+			cases.add(listeComposantPlateau.get(explosingCase - 1));
 		}
 		if (isValidPosition(explosingCase + 1)) {
-			cases.add(listeComposant.get(explosingCase + 1));
+			cases.add(listeComposantPlateau.get(explosingCase + 1));
 		}
 		if (isValidPosition(explosingCase - 8)) {
-			cases.add(listeComposant.get(explosingCase - 8));
+			cases.add(listeComposantPlateau.get(explosingCase - 8));
 		}
 		if (isValidPosition(explosingCase + 8)) {
-			cases.add(listeComposant.get(explosingCase + 8));
+			cases.add(listeComposantPlateau.get(explosingCase + 8));
 		}
 
 		return cases;
 	}
 
 	private boolean isValidPosition(int position) {
-		return position >= 0 && position < listeComposant.size();
+		return position >= 0 && position < listeComposantPlateau.size();
 	}
+
+	private void creerJoueur(ArrayList<Joueur> listeJoueur, int nbJoueur) {
+		for (int numeroJoueur = 0; numeroJoueur < nbJoueur; numeroJoueur++) {
+			Joueur player = new Joueur(numeroJoueur + 1);
+			listeJoueur.add(player);
+		}
+	}
+
+	private void entrezPseudo(ArrayList<Joueur> listeJoueur) {
+
+		for (Joueur joueur : listeJoueur) {
+			
+			String playerName = null;
+			playerName = JOptionPane
+.showInputDialog("Entrez le pseudo du joueur " + joueur.getNumeroJoueur() + ". ");
+			if (playerName == null) {
+				playerName = "Anonymous " + joueur.getNumeroJoueur();
+			}
+			joueur.setPseudo(playerName);
+
+		}
+
+	}
+
+	private void quiEstUnOrdi(ArrayList<Joueur> listeJoueur) {
+
+		for (Joueur joueur : listeJoueur) {
+
+			int yes = JOptionPane.showConfirmDialog(null, "Shall this player be controlled by computer", "Warning",
+				DO_NOTHING_ON_CLOSE);
+			if (yes == 0) {
+				joueur.setEstHumain(true);
+			} else {
+				joueur.setEstHumain(false);
+			}
+
+		}
+	}
+
 
 }
 
+/**
+ * Enfin nous verrons pour implementer differentes choses comme choisir la
+ * taille du terrain ajouter un Jmenu pour sauvegarder une partie finie dans un
+ * fichier pour pouvoir la rejouer coup par coup et pour finir un service pour
+ * passer d'une JFrame a une autre pour que tout ressemble à un jeu fini et
+ * complet enfin si on a le temps on étudieras la question de l'appli Android.
+ * 
+ */
