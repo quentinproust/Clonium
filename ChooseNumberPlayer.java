@@ -1,6 +1,7 @@
 package new_idea;
 
 import java.awt.Label;
+import java.awt.Window;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
@@ -56,7 +57,7 @@ public class ChooseNumberPlayer extends JFrame {
 		setLocationRelativeTo(null);
 		for (int numeroBouton = 0; numeroBouton < 3; numeroBouton++) {
 			JButton laCasette = null;
-			listeBouton.add(nbJoueur(laCasette, numeroBouton));
+			listeBouton.add(creerBoutonNbJoueur(laCasette, numeroBouton));
 			numberOfPlayerFrame.add(listeBouton.get(numeroBouton));
 			ajouterAction(listeBouton.get(numeroBouton));
 		}
@@ -70,10 +71,10 @@ public class ChooseNumberPlayer extends JFrame {
 				JButton currentlyClicked = ((JButton) leftClick.getSource());
 
 				if (leftClick != null) {
-
-					short nbJoueur = (short) (listeBouton.indexOf(currentlyClicked) + 1);
+					// 2 car on commence avec 2 joueur (jeu 2-4 joueurs)
+					short nbJoueur = (short) (listeBouton.indexOf(currentlyClicked) + 2);
 					setNumberOfPlayer(nbJoueur);
-					System.out.println(getNumberOfPlayer());
+
 
 				}
 				
@@ -90,9 +91,9 @@ public class ChooseNumberPlayer extends JFrame {
 		return label;
 	}
 
-	private JButton nbJoueur(JButton choixParticipants, int numeroBouton) {
+	private JButton creerBoutonNbJoueur(JButton choixParticipants, int numeroBouton) {
 		if (choixParticipants == null) {
-			choixParticipants = new JButton((numeroBouton + 1) + " joueurs");
+			choixParticipants = new JButton((numeroBouton + 2) + " joueurs");
 			choixParticipants.setBounds(10, 50 + (60 * numeroBouton), 160, 50);
 		}
 		return choixParticipants;
@@ -103,12 +104,13 @@ public class ChooseNumberPlayer extends JFrame {
 			boutonConfirmation = new JButton("OK");
 			boutonConfirmation.addMouseListener(new MouseAdapter() {
 				public void mouseClicked(MouseEvent leftClick) {
+					JButton currentlyClicked = ((JButton) leftClick.getSource());
 
 					if (leftClick != null && numberOfPlayer != 0) {
 						try {
 							Clonium plateau = new Clonium(getNumberOfPlayer());
 							plateau.setVisible(true);
-
+							((Window) currentlyClicked.getTopLevelAncestor()).dispose();
 						} catch (Exception e) {
 							e.printStackTrace();
 						}
@@ -139,5 +141,4 @@ public class ChooseNumberPlayer extends JFrame {
 		}
 
 	}
-
 }

@@ -1,3 +1,4 @@
+package new_idea;
 
 import javax.swing.JButton;
 
@@ -8,6 +9,14 @@ public class Case extends JButton {
 	private Joueur owner;
 
 	private int id;
+
+	public Joueur getOwner() {
+		return owner;
+	}
+
+	public void setOwner(Joueur owner) {
+		this.owner = owner;
+	}
 
 	public int getId() {
 		return id;
@@ -24,7 +33,7 @@ public class Case extends JButton {
 	public Case(int id) {
 
 
-		this.setText("1");
+		this.setText("0");
 
 		this.setId(id);
 		this.setBounds((id % 8) * 82 + 10, (id / 8) * 54 + 10, 70, 40);
@@ -45,7 +54,8 @@ public class Case extends JButton {
 
 	public void resetValue() {
 		setText("0");
-		// setJeton().setValue(0);
+		setBackground(null);
+
 	}
 
 
