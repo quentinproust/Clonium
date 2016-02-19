@@ -1,5 +1,6 @@
 package new_idea;
 
+import java.awt.Color;
 import java.awt.EventQueue;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -24,6 +25,8 @@ public class Clonium extends JFrame {
 
 	private ArrayList<Joueur> listeJoueur = new ArrayList<Joueur>();
 
+	private short numeroJoueur;
+
 	public static void main(String[] args) {
 
 		EventQueue.invokeLater(new Runnable() {
@@ -40,10 +43,6 @@ public class Clonium extends JFrame {
 			}
 		});
 	}
-
-	/**
-	 * Create the frame.
-	 */
 
 	public Clonium() {
 
@@ -66,23 +65,28 @@ public class Clonium extends JFrame {
 		humanMachineInterface.add(getLayeredPane_1());
 		setLocationRelativeTo(null);
 		setAlwaysOnTop(true);
-		// Create second list of components
 
-		// create Players List
+		// Create Players List
 		creerJoueur(listeJoueur, nbJoueur);
 		entrezPseudo(listeJoueur);
 		quiEstUnOrdi(listeJoueur);
+		numeroJoueur = 0;
 
 		// Create List of components
 		for (int id = 0; id < 64; id++) {
 
 			Case laCase = creerCase(id);
+			if (id == 9 || id == 14 || id == 49 || id == 54) {
+				laCase.setBackground(Color.red);
+			}
 			listeComposantPlateau.add(laCase);
 
 			// Add every Case to the JFrame
 			humanMachineInterface.add(laCase);
 		}
-
+		JOptionPane.showMessageDialog(humanMachineInterface,
+				"Appuyez sur les cases rouges pour choisir ou vous alez commencez", "Information",
+				JOptionPane.INFORMATION_MESSAGE);
 
 	}
 
@@ -104,33 +108,50 @@ public class Clonium extends JFrame {
 					// Récupération de la valeur du jeton.
 					Case currentCase = (Case) leftClick.getSource();
 					int currentValue = currentCase.getValue();
+					// Récupération du numero du proprietaire.
+					Joueur currentOwner = currentCase.getOwner();
 
-					// Test s'il y a un jeton.
-					System.out.println("Hue");
-					if (currentValue == '0') {
+					if (currentCase.getBackground() == Color.RED
+							&& etesVousPlacer(listeComposantPlateau, listeJoueur)) {
 
-						System.out.println("Hihi");
+						currentCase.increaseValue();
+						currentCase.setOwner(listeJoueur.get(numeroJoueur));
+						enleverRouge(listeComposantPlateau);
+						tourSuivant(listeJoueur);
+
+					} else if (currentCase.getBackground() == Color.RED
+							&& !etesVousPlacer(listeComposantPlateau, listeJoueur)) {
+
+						currentCase.increaseValue();
+						currentCase.setOwner(listeJoueur.get(numeroJoueur));
+						tourSuivant(listeJoueur);
+
+					} else if (currentOwner != listeJoueur.get(numeroJoueur) && listeJoueur.get(numeroJoueur) != null
+							&& currentValue != '0') {
+
+						JOptionPane.showMessageDialog(humanMachineInterface,
+								"Vous ne pouvez pas jouer ici car le jeton dans cette case appartient à quelqu'un d'autre",
+								"Error", JOptionPane.WARNING_MESSAGE);
+
+					} else if (currentValue == '0') {
+
+
 						JOptionPane.showMessageDialog(humanMachineInterface,
 								"Vous ne pouvez pas jouer ici car il n'y a pas de jeton",
 								"Error", JOptionPane.WARNING_MESSAGE);
 
-						System.out.println("hihi2");
 					} else if (currentValue >= '1' && currentValue < '3') {
 
 						currentCase.increaseValue();
+						tourSuivant(listeJoueur);
 
 					} else if (currentValue >= '3') {
 
 						currentCase.resetValue();
 						int explosingCase = currentCase.getId();
+						explosion(explosingCase);
 
-						List<Case> casesAdjacentes = getCasesAdjacentes(explosingCase);
-
-						for (Case c : casesAdjacentes) {
-							c.increaseValue();
-							System.out.println(c.getId() + "->" + c.getValue());
-
-						}
+						tourSuivant(listeJoueur);
 					}
 				}
 			}
@@ -143,6 +164,21 @@ public class Clonium extends JFrame {
 			layeredPane.setBounds(181, 81, 1, 1);
 		}
 		return layeredPane;
+	}
+
+	private void explosion(int explosingCase) {
+		List<Case> casesAdjacentes = getCasesAdjacentes(explosingCase);
+
+		for (Case c : casesAdjacentes) {
+			c.setOwner(listeJoueur.get(numeroJoueur));
+			c.increaseValue();
+			System.out.println(c.getId() + "->" + c.getValue());
+			if (c.getValue() >= '4') {
+				c.resetValue();
+				explosion(c.getId());
+
+			}
+		}
 	}
 
 	private List<Case> getCasesAdjacentes(int explosingCase) {
@@ -207,6 +243,35 @@ public class Clonium extends JFrame {
 		}
 	}
 
+	private boolean etesVousPlacer(ArrayList<Case> listeComposantPlateau,ArrayList<Joueur> listeJoueur) {
+		int nombreJoueur = listeJoueur.size();
+		int nbCaseA1 = 0;
+		for(Case bouton : listeComposantPlateau){
+			if (bouton.getValue() == '1') {
+				nbCaseA1++;
+			}
+			
+		}
+		return nombreJoueur == nbCaseA1 + 1;
+
+	}
+
+	private void enleverRouge(ArrayList<Case> listeComposantPlateau) {
+		for (Case bouton : listeComposantPlateau) {
+			if (bouton.getBackground() == Color.RED) {
+				bouton.setBackground(new Color(240, 240, 240));
+			}
+		}
+	}
+
+	private void tourSuivant(ArrayList<Joueur> listeJoueur) {
+		if (numeroJoueur != listeJoueur.size() - 1) {
+			numeroJoueur++;
+		} else {
+			numeroJoueur = 0;
+		}
+
+	}
 
 }
 
