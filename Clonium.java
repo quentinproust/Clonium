@@ -23,7 +23,7 @@ public class Clonium extends JFrame {
 
 	private ArrayList<Joueur> listeJoueur = new ArrayList<Joueur>();
 
-	private short numeroJoueur;
+	private Joueur currentPlayer;
 
 	public static void main(String[] args) {
 
@@ -64,8 +64,7 @@ public class Clonium extends JFrame {
 		creerJoueur(nbJoueur);
 		entrezPseudo();
 		quiEstUnOrdi();
-		numeroJoueur = 0;
-
+		
 		// Create List of components
 		for (int id = 0; id < 64; id++) {
 
@@ -106,7 +105,7 @@ public class Clonium extends JFrame {
 						&& etesVousPlacer(listeComposantPlateau)) {
 
 					currentCase.increaseValue();
-					currentCase.setOwner(listeJoueur.get(numeroJoueur));
+					currentCase.setOwner(currentPlayer);
 					enleverRouge(listeComposantPlateau);
 					tourSuivant();
 
@@ -114,10 +113,10 @@ public class Clonium extends JFrame {
 						&& !etesVousPlacer(listeComposantPlateau)) {
 
 					currentCase.increaseValue();
-					currentCase.setOwner(listeJoueur.get(numeroJoueur));
+					currentCase.setOwner(currentPlayer);
 					tourSuivant();
 
-				} else if (currentOwner != listeJoueur.get(numeroJoueur) && listeJoueur.get(numeroJoueur) != null
+				} else if (currentOwner != currentPlayer && currentPlayer != null
 						&& currentValue != '0') {
 
 					JOptionPane.showMessageDialog(humanMachineInterface,
@@ -158,7 +157,7 @@ public class Clonium extends JFrame {
 		List<Case> casesAdjacentes = getCasesAdjacentes(explosingCase);
 
 		for (Case c : casesAdjacentes) {
-			c.setOwner(listeJoueur.get(numeroJoueur));
+			c.setOwner(currentPlayer);
 			c.increaseValue();
 			System.out.println(c.getId() + "->" + c.getValue());
 			if (c.getValue() >= '4') {
@@ -252,12 +251,13 @@ public class Clonium extends JFrame {
 	}
 
 	private void tourSuivant() {
+		int numeroJoueur = listeJoueur.indexOf(currentPlayer);
 		if (numeroJoueur != listeJoueur.size() - 1) {
 			numeroJoueur++;
 		} else {
 			numeroJoueur = 0;
 		}
-
+		currentPlayer = listeJoueur.get(numeroJoueur);
 	}
 
 }
