@@ -69,6 +69,7 @@ public class Clonium extends JFrame {
 		for (int id = 0; id < 64; id++) {
 
 			Case laCase = creerCase(id);
+			// TODO stange magic number, no idea what they mean. please fix !
 			if (id == 9 || id == 14 || id == 49 || id == 54) {
 				laCase.setBackground(Color.red);
 			}
