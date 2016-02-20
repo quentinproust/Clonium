@@ -68,15 +68,9 @@ public class ChooseNumberPlayer extends JFrame {
 		button.addMouseListener(new MouseAdapter() {
 			public void mouseClicked(MouseEvent leftClick) {
 				JButton currentlyClicked = ((JButton) leftClick.getSource());
-
-				if (leftClick != null) {
-
-					short nbJoueur = (short) (listeBouton.indexOf(currentlyClicked) + 1);
-					setNumberOfPlayer(nbJoueur);
-					System.out.println(getNumberOfPlayer());
-
-				}
-				
+				short nbJoueur = (short) (listeBouton.indexOf(currentlyClicked) + 1);
+				setNumberOfPlayer(nbJoueur);
+				System.out.println(getNumberOfPlayer());
 			}
 		});
 		
