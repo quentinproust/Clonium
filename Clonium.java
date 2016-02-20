@@ -61,9 +61,9 @@ public class Clonium extends JFrame {
 		setAlwaysOnTop(true);
 
 		// Create Players List
-		creerJoueur(listeJoueur, nbJoueur);
-		entrezPseudo(listeJoueur);
-		quiEstUnOrdi(listeJoueur);
+		creerJoueur(nbJoueur);
+		entrezPseudo();
+		quiEstUnOrdi();
 		numeroJoueur = 0;
 
 		// Create List of components
@@ -103,19 +103,19 @@ public class Clonium extends JFrame {
 				Joueur currentOwner = currentCase.getOwner();
 
 				if (currentCase.getBackground() == Color.RED
-						&& etesVousPlacer(listeComposantPlateau, listeJoueur)) {
+						&& etesVousPlacer(listeComposantPlateau)) {
 
 					currentCase.increaseValue();
 					currentCase.setOwner(listeJoueur.get(numeroJoueur));
 					enleverRouge(listeComposantPlateau);
-					tourSuivant(listeJoueur);
+					tourSuivant();
 
 				} else if (currentCase.getBackground() == Color.RED
-						&& !etesVousPlacer(listeComposantPlateau, listeJoueur)) {
+						&& !etesVousPlacer(listeComposantPlateau)) {
 
 					currentCase.increaseValue();
 					currentCase.setOwner(listeJoueur.get(numeroJoueur));
-					tourSuivant(listeJoueur);
+					tourSuivant();
 
 				} else if (currentOwner != listeJoueur.get(numeroJoueur) && listeJoueur.get(numeroJoueur) != null
 						&& currentValue != '0') {
@@ -134,7 +134,7 @@ public class Clonium extends JFrame {
 				} else if (currentValue >= '1' && currentValue < '3') {
 
 					currentCase.increaseValue();
-					tourSuivant(listeJoueur);
+					tourSuivant();
 
 				} else if (currentValue >= '3') {
 
@@ -142,7 +142,7 @@ public class Clonium extends JFrame {
 					int explosingCase = currentCase.getId();
 					explosion(explosingCase);
 
-					tourSuivant(listeJoueur);
+					tourSuivant();
 				}
 			}
 		});
@@ -193,15 +193,14 @@ public class Clonium extends JFrame {
 		return position >= 0 && position < listeComposantPlateau.size();
 	}
 
-	private void creerJoueur(ArrayList<Joueur> listeJoueur, int nbJoueur) {
+	private void creerJoueur(int nbJoueur) {
 		for (int numeroJoueur = 0; numeroJoueur < nbJoueur; numeroJoueur++) {
 			Joueur player = new Joueur(numeroJoueur + 1);
 			listeJoueur.add(player);
 		}
 	}
 
-	private void entrezPseudo(ArrayList<Joueur> listeJoueur) {
-
+	private void entrezPseudo() {
 		for (Joueur joueur : listeJoueur) {
 			
 			String playerName = null;
@@ -216,7 +215,7 @@ public class Clonium extends JFrame {
 
 	}
 
-	private void quiEstUnOrdi(ArrayList<Joueur> listeJoueur) {
+	private void quiEstUnOrdi() {
 
 		for (Joueur joueur : listeJoueur) {
 
@@ -231,7 +230,7 @@ public class Clonium extends JFrame {
 		}
 	}
 
-	private boolean etesVousPlacer(ArrayList<Case> listeComposantPlateau,ArrayList<Joueur> listeJoueur) {
+	private boolean etesVousPlacer(ArrayList<Case> listeComposantPlateau) {
 		int nombreJoueur = listeJoueur.size();
 		int nbCaseA1 = 0;
 		for(Case bouton : listeComposantPlateau){
@@ -252,7 +251,7 @@ public class Clonium extends JFrame {
 		}
 	}
 
-	private void tourSuivant(ArrayList<Joueur> listeJoueur) {
+	private void tourSuivant() {
 		if (numeroJoueur != listeJoueur.size() - 1) {
 			numeroJoueur++;
 		} else {
