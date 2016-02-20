@@ -55,8 +55,7 @@ public class ChooseNumberPlayer extends JFrame {
 		numberOfPlayerFrame.add(getLabel());
 		setLocationRelativeTo(null);
 		for (int numeroBouton = 0; numeroBouton < 3; numeroBouton++) {
-			JButton laCasette = null;
-			listeBouton.add(nbJoueur(laCasette, numeroBouton));
+			listeBouton.add(createNbJoueurButton(numeroBouton));
 			numberOfPlayerFrame.add(listeBouton.get(numeroBouton));
 			ajouterAction(listeBouton.get(numeroBouton));
 		}
@@ -84,12 +83,10 @@ public class ChooseNumberPlayer extends JFrame {
 		return label;
 	}
 
-	private JButton nbJoueur(JButton choixParticipants, int numeroBouton) {
-		if (choixParticipants == null) {
-			choixParticipants = new JButton((numeroBouton + 1) + " joueurs");
-			choixParticipants.setBounds(10, 50 + (60 * numeroBouton), 160, 50);
-		}
-		return choixParticipants;
+	private JButton createNbJoueurButton(int numeroBouton) {
+		JButton btn = new JButton((numeroBouton + 1) + " joueurs");
+		btn.setBounds(10, 50 + (60 * numeroBouton), 160, 50);
+		return btn;
 	}
 
 	private JButton getBoutonConfirmation() {
