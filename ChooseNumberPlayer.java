@@ -17,49 +17,27 @@ public class ChooseNumberPlayer extends JFrame {
 
 	private ArrayList<JButton> listeBouton = new ArrayList<JButton>();
 
-	private ArrayList<Joueur> listeDesJoueurs = new ArrayList<Joueur>();
-
-	private JPanel numberOfPlayerFrame;
-
-	private Label label;
-
 	private short numberOfPlayer;
 
-	public ArrayList<Joueur> getListeDesJoueurs() {
-		return listeDesJoueurs;
-	}
-
-	public void setListeDesJoueurs(ArrayList<Joueur> listeDesJoueurs) {
-		this.listeDesJoueurs = listeDesJoueurs;
-	}
-
-	public short getNumberOfPlayer() {
-		return numberOfPlayer;
-	}
-
-	private void setNumberOfPlayer(short numberOfPlayer) {
-		this.numberOfPlayer = numberOfPlayer;
-	}
-
 	public ChooseNumberPlayer() {
-
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
 		setBounds(100, 100, 200, 325);
-		numberOfPlayerFrame = new JPanel();
+		
+		JPanel numberOfPlayerFrame = new JPanel();
 		numberOfPlayerFrame.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(numberOfPlayerFrame);
 		numberOfPlayerFrame.setLayout(null);
 		numberOfPlayerFrame.add(createQuestionLabel());
 		setLocationRelativeTo(null);
-		for (int numeroBouton = 0; numeroBouton < 3; numeroBouton++) {
+		
+		for (int numeroBouton = 1; numeroBouton <= 3; numeroBouton++) {
 			JButton choix = createNbJoueurButton(numeroBouton);
 			ajouterAction(choix);
 			listeBouton.add(choix);
 			numberOfPlayerFrame.add(choix);
 		}
-		listeBouton.add(createConfirmationButton());
-		numberOfPlayerFrame.add(listeBouton.get(listeBouton.size() - 1));
+		
+		numberOfPlayerFrame.add(createConfirmationButton());
 	}
 
 	private void ajouterAction(JButton button) {
@@ -67,7 +45,7 @@ public class ChooseNumberPlayer extends JFrame {
 			public void mouseClicked(MouseEvent leftClick) {
 				JButton currentlyClicked = ((JButton) leftClick.getSource());
 				short nbJoueur = (short) (listeBouton.indexOf(currentlyClicked) + 1);
-				setNumberOfPlayer(nbJoueur);
+				numberOfPlayer = nbJoueur;
 				System.out.println(getNumberOfPlayer());
 			}
 		});
@@ -81,7 +59,7 @@ public class ChooseNumberPlayer extends JFrame {
 	}
 
 	private JButton createNbJoueurButton(int numeroBouton) {
-		JButton btn = new JButton((numeroBouton + 1) + " joueurs");
+		JButton btn = new JButton(numeroBouton + " joueurs");
 		btn.setBounds(10, 50 + (60 * numeroBouton), 160, 50);
 		return btn;
 	}
@@ -92,7 +70,7 @@ public class ChooseNumberPlayer extends JFrame {
 			public void mouseClicked(MouseEvent leftClick) {
 				if (numberOfPlayer != 0) {
 					try {
-						Clonium plateau = new Clonium(getNumberOfPlayer());
+						Clonium plateau = new Clonium(numberOfPlayer);
 						plateau.setVisible(true);
 
 					} catch (Exception e) {
@@ -111,20 +89,6 @@ public class ChooseNumberPlayer extends JFrame {
 
 		boutonConfirmation.setBounds(50, 230, 90, 45);
 		return boutonConfirmation;
-	}
-
-	public ArrayList<JButton> getListeBouton() {
-		return listeBouton;
-	}
-
-	public void creerJoueur(int nbJoueur) {
-		for (int numeroJoueur = 0; numeroJoueur < nbJoueur; numeroJoueur++) {
-
-			Joueur player = new Joueur(numeroJoueur + 1);
-			listeDesJoueurs.add(player);
-
-		}
-
 	}
 
 }
