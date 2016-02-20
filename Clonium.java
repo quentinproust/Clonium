@@ -19,8 +19,6 @@ public class Clonium extends JFrame {
 
 	private JPanel humanMachineInterface;
 
-	private JLayeredPane layeredPane;
-
 	private ArrayList<Case> listeComposantPlateau = new ArrayList<Case>();
 
 	private ArrayList<Joueur> listeJoueur = new ArrayList<Joueur>();
@@ -44,10 +42,6 @@ public class Clonium extends JFrame {
 		});
 	}
 
-	public Clonium() {
-
-	}
-
 	public Clonium(int nbJoueur) {
 		// All default operations
 
@@ -62,7 +56,7 @@ public class Clonium extends JFrame {
 		// Allows JFrame to have Component(s)
 		setContentPane(humanMachineInterface);
 		humanMachineInterface.setLayout(null);
-		humanMachineInterface.add(getLayeredPane_1());
+		humanMachineInterface.add(createLayeredPane());
 		setLocationRelativeTo(null);
 		setAlwaysOnTop(true);
 
@@ -102,67 +96,61 @@ public class Clonium extends JFrame {
 		// Add actions to my object
 		laCase.addMouseListener(new MouseAdapter() {
 			public void mouseClicked(MouseEvent leftClick) {
+				// Récupération de la valeur du jeton.
+				Case currentCase = (Case) leftClick.getSource();
+				int currentValue = currentCase.getValue();
+				// Récupération du numero du proprietaire.
+				Joueur currentOwner = currentCase.getOwner();
 
-				if (leftClick != null) {
+				if (currentCase.getBackground() == Color.RED
+						&& etesVousPlacer(listeComposantPlateau, listeJoueur)) {
 
-					// Récupération de la valeur du jeton.
-					Case currentCase = (Case) leftClick.getSource();
-					int currentValue = currentCase.getValue();
-					// Récupération du numero du proprietaire.
-					Joueur currentOwner = currentCase.getOwner();
+					currentCase.increaseValue();
+					currentCase.setOwner(listeJoueur.get(numeroJoueur));
+					enleverRouge(listeComposantPlateau);
+					tourSuivant(listeJoueur);
 
-					if (currentCase.getBackground() == Color.RED
-							&& etesVousPlacer(listeComposantPlateau, listeJoueur)) {
+				} else if (currentCase.getBackground() == Color.RED
+						&& !etesVousPlacer(listeComposantPlateau, listeJoueur)) {
 
-						currentCase.increaseValue();
-						currentCase.setOwner(listeJoueur.get(numeroJoueur));
-						enleverRouge(listeComposantPlateau);
-						tourSuivant(listeJoueur);
+					currentCase.increaseValue();
+					currentCase.setOwner(listeJoueur.get(numeroJoueur));
+					tourSuivant(listeJoueur);
 
-					} else if (currentCase.getBackground() == Color.RED
-							&& !etesVousPlacer(listeComposantPlateau, listeJoueur)) {
+				} else if (currentOwner != listeJoueur.get(numeroJoueur) && listeJoueur.get(numeroJoueur) != null
+						&& currentValue != '0') {
 
-						currentCase.increaseValue();
-						currentCase.setOwner(listeJoueur.get(numeroJoueur));
-						tourSuivant(listeJoueur);
+					JOptionPane.showMessageDialog(humanMachineInterface,
+							"Vous ne pouvez pas jouer ici car le jeton dans cette case appartient à quelqu'un d'autre",
+							"Error", JOptionPane.WARNING_MESSAGE);
 
-					} else if (currentOwner != listeJoueur.get(numeroJoueur) && listeJoueur.get(numeroJoueur) != null
-							&& currentValue != '0') {
-
-						JOptionPane.showMessageDialog(humanMachineInterface,
-								"Vous ne pouvez pas jouer ici car le jeton dans cette case appartient à quelqu'un d'autre",
-								"Error", JOptionPane.WARNING_MESSAGE);
-
-					} else if (currentValue == '0') {
+				} else if (currentValue == '0') {
 
 
-						JOptionPane.showMessageDialog(humanMachineInterface,
-								"Vous ne pouvez pas jouer ici car il n'y a pas de jeton",
-								"Error", JOptionPane.WARNING_MESSAGE);
+					JOptionPane.showMessageDialog(humanMachineInterface,
+							"Vous ne pouvez pas jouer ici car il n'y a pas de jeton",
+							"Error", JOptionPane.WARNING_MESSAGE);
 
-					} else if (currentValue >= '1' && currentValue < '3') {
+				} else if (currentValue >= '1' && currentValue < '3') {
 
-						currentCase.increaseValue();
-						tourSuivant(listeJoueur);
+					currentCase.increaseValue();
+					tourSuivant(listeJoueur);
 
-					} else if (currentValue >= '3') {
+				} else if (currentValue >= '3') {
 
-						currentCase.resetValue();
-						int explosingCase = currentCase.getId();
-						explosion(explosingCase);
+					currentCase.resetValue();
+					int explosingCase = currentCase.getId();
+					explosion(explosingCase);
 
-						tourSuivant(listeJoueur);
-					}
+					tourSuivant(listeJoueur);
 				}
 			}
 		});
 	}
 
-	private JLayeredPane getLayeredPane_1() {
-		if (layeredPane == null) {
-			layeredPane = new JLayeredPane();
-			layeredPane.setBounds(181, 81, 1, 1);
-		}
+	private JLayeredPane createLayeredPane() {
+		JLayeredPane layeredPane = new JLayeredPane();
+		layeredPane.setBounds(181, 81, 1, 1);
 		return layeredPane;
 	}
 
