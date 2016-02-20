@@ -23,8 +23,6 @@ public class ChooseNumberPlayer extends JFrame {
 
 	private Label label;
 
-	private JButton boutonConfirmation;
-
 	private short numberOfPlayer;
 
 	public ArrayList<Joueur> getListeDesJoueurs() {
@@ -52,14 +50,15 @@ public class ChooseNumberPlayer extends JFrame {
 		numberOfPlayerFrame.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(numberOfPlayerFrame);
 		numberOfPlayerFrame.setLayout(null);
-		numberOfPlayerFrame.add(getLabel());
+		numberOfPlayerFrame.add(createQuestionLabel());
 		setLocationRelativeTo(null);
 		for (int numeroBouton = 0; numeroBouton < 3; numeroBouton++) {
-			listeBouton.add(createNbJoueurButton(numeroBouton));
-			numberOfPlayerFrame.add(listeBouton.get(numeroBouton));
-			ajouterAction(listeBouton.get(numeroBouton));
+			JButton choix = createNbJoueurButton(numeroBouton);
+			ajouterAction(choix);
+			listeBouton.add(choix);
+			numberOfPlayerFrame.add(choix);
 		}
-		listeBouton.add(getBoutonConfirmation());
+		listeBouton.add(createConfirmationButton());
 		numberOfPlayerFrame.add(listeBouton.get(listeBouton.size() - 1));
 	}
 
@@ -75,11 +74,9 @@ public class ChooseNumberPlayer extends JFrame {
 		
 	}
 	
-	private Label getLabel() {
-		if (label == null) {
-			label = new Label("Combien de joueur vont jouer ?");
-			label.setBounds(0, 10, 190, 30);
-		}
+	private Label createQuestionLabel() {
+		Label label = new Label("Combien de joueur vont jouer ?");
+		label.setBounds(0, 10, 190, 30);
 		return label;
 	}
 
@@ -89,31 +86,30 @@ public class ChooseNumberPlayer extends JFrame {
 		return btn;
 	}
 
-	private JButton getBoutonConfirmation() {
-		if (boutonConfirmation == null) {
-			boutonConfirmation = new JButton("OK");
-			boutonConfirmation.addMouseListener(new MouseAdapter() {
-				public void mouseClicked(MouseEvent leftClick) {
+	private JButton createConfirmationButton() {
+		JButton boutonConfirmation = new JButton("OK");
+		boutonConfirmation.addMouseListener(new MouseAdapter() {
+			public void mouseClicked(MouseEvent leftClick) {
+				if (numberOfPlayer != 0) {
+					try {
+						Clonium plateau = new Clonium(getNumberOfPlayer());
+						plateau.setVisible(true);
 
-					if (leftClick != null && numberOfPlayer != 0) {
-						try {
-							Clonium plateau = new Clonium(getNumberOfPlayer());
-							plateau.setVisible(true);
-
-						} catch (Exception e) {
-							e.printStackTrace();
-						}
-
-					} else if (numberOfPlayer == 0) {
-						JOptionPane.showMessageDialog(null, "Vous devez choisir un nombre de joueur ",
-								"Error: Pas de selection", JOptionPane.WARNING_MESSAGE);
+					} catch (Exception e) {
+						JOptionPane.showMessageDialog(null, "Erreur fatale",
+							"Une erreur est survenue, le programme va se fermer.", JOptionPane.WARNING_MESSAGE);
+						throw new RuntimeException(e);
 					}
 
+				} else if (numberOfPlayer == 0) {
+					JOptionPane.showMessageDialog(null, "Vous devez choisir un nombre de joueur ",
+							"Error: Pas de selection", JOptionPane.WARNING_MESSAGE);
 				}
-			});
 
-			boutonConfirmation.setBounds(50, 230, 90, 45);
-		}
+			}
+		});
+
+		boutonConfirmation.setBounds(50, 230, 90, 45);
 		return boutonConfirmation;
 	}
 
